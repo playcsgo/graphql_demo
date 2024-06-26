@@ -1,0 +1,60 @@
+# type Query {
+#   greeting: String
+# }
+
+type Query {
+  jobs(limit: Int, offset: Int): JobSubList  # 如果要回傳一個Arry, resolver.js那邊就要return [{ }]
+                # 裡面也可以加 ! 裡面不能有null, 但可以全空
+  job(id: ID!): Job  # 用id去找, 回傳一個Job
+  company(id: ID!): Company
+}
+
+type JobSubList {
+  items: [Job]
+  totalCount: Int!
+}
+
+# mutation = create
+     
+type Mutation {
+  createJob(input: CreateJobInput!): Job
+  deleteJob(id: ID!): Job
+  updateJob(input: updateJobInput!): Job
+}
+
+"""
+!!Represents a job ad posted to ourcompany.!!
+"""
+
+# company_name, date, description
+
+type Company {
+  id:ID!
+  name: ID!
+  description: String
+  jobs: [Job!]!  # 裡面不能有null, 而且整個 [ ] 不能為 null
+}
+
+type Job {
+  id: ID!  # 後面加一個 ! 表示不可為空. 正常不要放
+  """ data of CreatedAt E.g. ''2022-12-31."""
+  date: String
+  title: String
+  company: Company!
+  description: String
+}
+
+# 有input output之分  
+# type 是output
+# 而 input 則是以變數作為input
+
+input CreateJobInput {
+  title: String!
+  description: String
+}
+
+input updateJobInput {
+  id: ID!
+  title: String
+  description: String
+}
